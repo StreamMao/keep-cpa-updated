@@ -34,3 +34,17 @@ container_running() {
   [[ -n "$id" ]] || return 1
   [[ "$(docker inspect -f '{{.State.Running}}' "$id")" == "true" ]]
 }
+
+container_id() {
+  local name="$1" id
+  if [[ "${PROXYCTL_DOCKER_DRY_RUN:-0}" == "1" ]]; then
+    echo "-"
+    return 0
+  fi
+  id="$(_run_compose ps -q "$name" 2>/dev/null | head -n1 || true)"
+  if [[ -n "$id" ]]; then
+    echo "$id"
+  else
+    echo "-"
+  fi
+}

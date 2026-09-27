@@ -59,3 +59,12 @@ resolve_targets() {
   fi
   echo "$arg"
 }
+
+# Resolve targets once; on failure returns 1 (safe under set -e). Sets $2 to newline-separated names.
+read_resolve_targets() {
+  local arg="$1" varname="$2" targets
+  if ! targets="$(resolve_targets "$arg")"; then
+    return 1
+  fi
+  printf -v "$varname" '%s' "$targets"
+}

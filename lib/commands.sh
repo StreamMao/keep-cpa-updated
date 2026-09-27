@@ -64,11 +64,13 @@ update_one() {
 }
 
 cmd_update() {
-  local arg="${1:-all}" t rc=0
+  local arg="${1:-all}" t rc=0 targets
   generate_compose
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     update_one "$t" || rc=1
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
   return "$rc"
 }
 
@@ -82,16 +84,19 @@ cmd_deploy() {
     arg="${1:-all}"
   fi
   mkdir -p "$TOOLS_DIR"
-  local t
+  local t targets
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     ensure_clone "$t"
     _prepare_service_host_dirs "$t"
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
   generate_compose
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     compose_build "$t"
     compose_up "$t"
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
   if [[ "$arg" == "all" ]]; then
     enable_timer
   fi
@@ -112,15 +117,17 @@ cmd_undeploy() {
     esac
   done
   generate_compose
-  local t
+  local t targets
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     compose_stop "$t" || true
     compose_rm "$t" || true
     if [[ "$purge" -eq 1 ]]; then
       rm -rf "$(service_dir "$t")"
       log_info "Purged clone for $t"
     fi
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
   if [[ "$arg" == "all" ]]; then
     disable_timer
   fi
@@ -128,40 +135,50 @@ cmd_undeploy() {
 
 cmd_start() {
   require_cmds || return 1
-  local arg="${1:-all}" t
+  local arg="${1:-all}" t targets
   generate_compose
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     compose_up "$t"
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
 }
 
 cmd_stop() {
   require_cmds || return 1
-  local arg="${1:-all}" t
+  local arg="${1:-all}" t targets
   generate_compose
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     compose_stop "$t"
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
 }
 
 cmd_restart() {
   require_cmds || return 1
-  local arg="${1:-all}" t
+  local arg="${1:-all}" t targets
   generate_compose
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     compose_restart "$t"
-  done < <(resolve_targets "$arg")
+  done <<<"$targets"
 }
 
 cmd_status() {
   require_cmds || return 1
-  local arg="${1:-all}" t state sha last sha_file
+  local arg="${1:-all}" t state cid sha last sha_file targets
   generate_compose
-  printf "%-22s %-10s %-8s %s\n" "NAME" "STATE" "SHA" "LAST_UPDATE"
+  printf "%-22s %-10s %-14s %-8s %s\n" "NAME" "STATE" "CONTAINER_ID" "SHA" "LAST_UPDATE"
+  read_resolve_targets "$arg" targets || return 1
   while IFS= read -r t; do
+    [[ -z "$t" ]] && continue
     state="stopped"
+    cid="-"
     if container_running "$t"; then
       state="running"
+      cid="$(container_id "$t")"
     fi
     sha="-"
     if [[ -d "$(service_dir "$t")/.git" ]]; then
@@ -172,8 +189,8 @@ cmd_status() {
     if [[ -f "$sha_file" ]]; then
       read -r _ last <"$sha_file" || true
     fi
-    printf "%-22s %-10s %-8s %s\n" "$t" "$state" "$sha" "$last"
-  done < <(resolve_targets "$arg")
+    printf "%-22s %-10s %-14s %-8s %s\n" "$t" "$state" "$cid" "$sha" "$last"
+  done <<<"$targets"
 }
 
 cmd_logs() {
