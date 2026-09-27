@@ -43,7 +43,7 @@ container_id() {
   fi
   id="$(_run_compose ps -q "$name" 2>/dev/null | head -n1 || true)"
   if [[ -n "$id" ]]; then
-    echo "$id"
+    echo "${id:0:12}"
   else
     echo "-"
   fi

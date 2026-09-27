@@ -12,6 +12,7 @@ export PROXYCTL_CRONTAB_FILE="$TMP/cron"
 enable_timer
 assert_contains "$(cat "$PROXYCTL_CRONTAB_FILE")" "BEGIN KEEP-CPA-OTD" "marker"
 assert_contains "$(cat "$PROXYCTL_CRONTAB_FILE")" "proxyctl update all" "cmd"
+assert_contains "$(cat "$PROXYCTL_CRONTAB_FILE")" "TZ=$TIMEZONE" "crontab TZ"
 disable_timer
 if grep -q "BEGIN KEEP-CPA-OTD" "$PROXYCTL_CRONTAB_FILE"; then
   echo FAIL still present; ASSERT_FAILS=$((ASSERT_FAILS+1))

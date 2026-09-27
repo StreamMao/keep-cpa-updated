@@ -10,8 +10,10 @@ Install on the server before using `proxyctl`:
 |------|---------|
 | **Docker Compose v2** (`docker compose`) | Build and run service containers |
 | **git** | Clone upstream repos and pull updates |
-| **yq** | Parse service registry YAML |
+| **yq** | Parse service registry YAML ([mikefarah/yq](https://github.com/mikefarah/yq) v4+) |
 | **bash** | Run `proxyctl` and library scripts |
+
+Install **yq** if missing, for example: `sudo wget -qO /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 && sudo chmod +x /usr/local/bin/yq` (pick the binary for your architecture from the release page).
 
 Docker Engine must be installed and the operator user able to run `docker` (group membership or root).
 
