@@ -18,4 +18,12 @@ assert_eq "keep-cpa-otd" "$COMPOSE_PROJECT_NAME" "project name"
 assert_eq "$HOME/tools" "$TOOLS_DIR" "tools_dir expanded"
 assert_contains "$UPDATE_CRON" "0 7 * * *" "cron morning"
 
+BAD_CFG="$TMP/bad-config.yaml"
+yq 'del(.compose_project_name)' "$CFG" >"$BAD_CFG"
+set +e
+load_config "$BAD_CFG" >/dev/null 2>&1
+bad_rc=$?
+set -e
+assert_eq 1 "$bad_rc" "load_config rejects missing compose_project_name"
+
 finish_asserts

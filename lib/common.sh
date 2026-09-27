@@ -40,8 +40,17 @@ ensure_runtime_dirs() {
   mkdir -p "$ROOT_DIR/runtime/state"
 }
 
+_require_config_field() {
+  local name="$1" value="$2"
+  if [[ -z "$value" || "$value" == "null" ]]; then
+    log_error "Invalid config: $name is missing or empty"
+    return 1
+  fi
+}
+
 load_config() {
   local cfg="${1:-$ROOT_DIR/config.yaml}"
+  local raw
   if [[ ! -f "$cfg" ]]; then
     if [[ -f "$ROOT_DIR/config.example.yaml" ]]; then
       cp "$ROOT_DIR/config.example.yaml" "$cfg"
@@ -51,9 +60,34 @@ load_config() {
       return 1
     fi
   fi
-  TOOLS_DIR="$(expand_path "$(yq -r '.tools_dir' "$cfg")")"
-  TIMEZONE="$(yq -r '.timezone' "$cfg")"
-  COMPOSE_PROJECT_NAME="$(yq -r '.compose_project_name' "$cfg")"
-  UPDATE_CRON="$(yq -r '.update_cron[]' "$cfg")"
+  if ! raw="$(yq -r '.tools_dir' "$cfg")"; then
+    log_error "Failed to read tools_dir from $cfg"
+    return 1
+  fi
+  TOOLS_DIR="$(expand_path "$raw")"
+  _require_config_field tools_dir "$TOOLS_DIR" || return 1
+
+  if ! raw="$(yq -r '.timezone' "$cfg")"; then
+    log_error "Failed to read timezone from $cfg"
+    return 1
+  fi
+  TIMEZONE="$raw"
+  _require_config_field timezone "$TIMEZONE" || return 1
+
+  if ! raw="$(yq -r '.compose_project_name' "$cfg")"; then
+    log_error "Failed to read compose_project_name from $cfg"
+    return 1
+  fi
+  COMPOSE_PROJECT_NAME="$raw"
+  _require_config_field compose_project_name "$COMPOSE_PROJECT_NAME" || return 1
+
+  if ! UPDATE_CRON="$(yq -r '.update_cron[]' "$cfg")"; then
+    log_error "Failed to read update_cron from $cfg"
+    return 1
+  fi
+  if [[ -z "$UPDATE_CRON" ]]; then
+    log_error "Invalid config: update_cron is missing or empty"
+    return 1
+  fi
   export TOOLS_DIR TIMEZONE COMPOSE_PROJECT_NAME UPDATE_CRON
 }
