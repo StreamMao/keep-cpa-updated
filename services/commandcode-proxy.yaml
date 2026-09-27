@@ -1,0 +1,15 @@
+name: commandcode-proxy
+repo: https://github.com/MAXeaglet/commandcode-proxy.git
+branch: master
+dir: commandcode-proxy
+build:
+  context: .
+  dockerfile: Dockerfile
+ports:
+  - "3050:3050"
+volumes: []
+environment:
+  PORT: "3050"
+env_file: null
+restart: unless-stopped
+enabled: true
