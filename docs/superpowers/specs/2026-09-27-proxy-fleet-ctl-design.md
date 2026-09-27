@@ -2,7 +2,7 @@
 
 **Date:** 2026-09-27  
 **Status:** Approved for implementation planning  
-**Workspace:** `keep-cpa-otd`
+**Workspace:** `keep-cpa-updated`
 
 ## Goal
 
@@ -38,10 +38,10 @@ Initial services:
 
 ## Layout
 
-### Toolkit repo (`keep-cpa-otd`)
+### Toolkit repo (`keep-cpa-updated`)
 
 ```text
-keep-cpa-otd/
+keep-cpa-updated/
 ├── proxyctl                          # Single CLI entrypoint (bash)
 ├── lib/                              # Shared helpers
 │   ├── common.sh
@@ -68,7 +68,7 @@ keep-cpa-otd/
 
 ```text
 ~/tools/                    # TOOLS_DIR (configurable)
-├── keep-cpa-otd/           # This toolkit (cloned from GitHub)
+├── keep-cpa-updated/           # This toolkit (cloned from GitHub)
 ├── CLIProxyAPI/            # Independent git clone
 └── commandcode-proxy/
 ```
@@ -89,7 +89,7 @@ timezone: America/New_York
 update_cron:
   - "0 7 * * *"    # 07:00
   - "0 0 * * *"    # 00:00
-compose_project_name: keep-cpa-otd
+compose_project_name: keep-cpa-updated
 ```
 
 Paths in service YAML may use `${TOOLS_DIR}` expanded from `tools_dir`.

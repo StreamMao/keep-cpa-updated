@@ -78,7 +78,7 @@ timezone: America/New_York
 update_cron:
   - "0 7 * * *"
   - "0 0 * * *"
-compose_project_name: keep-cpa-otd
+compose_project_name: keep-cpa-updated
 ```
 
 - [ ] **Step 3: Create test helpers and runner**
@@ -156,7 +156,7 @@ finish_asserts
 - [ ] **Step 4: Minimal README stub**
 
 ```markdown
-# keep-cpa-otd
+# keep-cpa-updated
 
 Proxy fleet control for CLIProxyAPI and commandcode-proxy. See `docs/superpowers/specs/2026-09-27-proxy-fleet-ctl-design.md`.
 
@@ -255,7 +255,7 @@ assert_eq "$HOME/tools" "$got" "expand_path"
 CFG="$TMP/config.yaml"
 cp "$ROOT/config.example.yaml" "$CFG"
 load_config "$CFG"
-assert_eq "keep-cpa-otd" "$COMPOSE_PROJECT_NAME" "project name"
+assert_eq "keep-cpa-updated" "$COMPOSE_PROJECT_NAME" "project name"
 assert_eq "$HOME/tools" "$TOOLS_DIR" "tools_dir expanded"
 assert_contains "$UPDATE_CRON" "0 7 * * *" "cron morning"
 

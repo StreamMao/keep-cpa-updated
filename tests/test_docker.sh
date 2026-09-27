@@ -10,5 +10,5 @@ out="$(compose_build cliproxyapi)"
 assert_contains "$out" "docker compose" "prefix"
 assert_contains "$out" "build" "build"
 assert_contains "$out" "cliproxyapi" "service"
-assert_contains "$out" "keep-cpa-otd" "project"
+assert_contains "$out" "keep-cpa-updated" "project"
 finish_asserts

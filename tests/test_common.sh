@@ -14,7 +14,7 @@ assert_eq "$HOME/tools" "$got" "expand_path"
 CFG="$TMP/config.yaml"
 cp "$ROOT/config.example.yaml" "$CFG"
 load_config "$CFG"
-assert_eq "keep-cpa-otd" "$COMPOSE_PROJECT_NAME" "project name"
+assert_eq "keep-cpa-updated" "$COMPOSE_PROJECT_NAME" "project name"
 assert_eq "$HOME/tools" "$TOOLS_DIR" "tools_dir expanded"
 assert_contains "$UPDATE_CRON" "0 7 * * *" "cron morning"
 
