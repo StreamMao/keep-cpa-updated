@@ -14,8 +14,8 @@ ports:
   - "11451:11451"
 volumes:
   - "${TOOLS_DIR}/CLIProxyAPI/config.yaml:/CLIProxyAPI/config.yaml"
-  # Official default auth-dir (~/.cli-proxy-api). Host home → container root home.
-  - "~/.cli-proxy-api:/root/.cli-proxy-api"
+  # Host persistence dir; app in container still uses ~/.cli-proxy-api (= /root/.cli-proxy-api).
+  - "${TOOLS_DIR}/CLIProxyAPI/auths:/root/.cli-proxy-api"
   - "${TOOLS_DIR}/CLIProxyAPI/logs:/CLIProxyAPI/logs"
   - "${TOOLS_DIR}/CLIProxyAPI/plugins:/CLIProxyAPI/plugins"
 env_file: null

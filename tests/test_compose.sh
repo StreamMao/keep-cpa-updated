@@ -18,6 +18,6 @@ assert_contains "$body" "dockerfile: Dockerfile" "dockerfile"
 assert_contains "$body" "8317:8317" "cliproxy port"
 assert_contains "$body" "3050:3050" "cc port"
 assert_contains "$body" "$TOOLS_DIR/CLIProxyAPI" "expanded tools dir in volumes"
-assert_contains "$body" "$HOME/.cli-proxy-api:/root/.cli-proxy-api" "official auth-dir mount"
+assert_contains "$body" "$TOOLS_DIR/CLIProxyAPI/auths:/root/.cli-proxy-api" "auth mount"
 
 finish_asserts
