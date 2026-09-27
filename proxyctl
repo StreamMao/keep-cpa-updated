@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -euo pipefail
+ROOT_DIR="$(cd "$(dirname "$0")" && pwd)"
+# shellcheck source=lib/common.sh
+source "$ROOT_DIR/lib/common.sh"
+source "$ROOT_DIR/lib/registry.sh"
+source "$ROOT_DIR/lib/compose.sh"
+source "$ROOT_DIR/lib/git.sh"
+source "$ROOT_DIR/lib/docker.sh"
+source "$ROOT_DIR/lib/timer.sh"
+source "$ROOT_DIR/lib/commands.sh"
+
+usage() {
+  cat <<'EOF'
+Usage: proxyctl <command> [service|all] [flags]
+
+Commands:
+  deploy [--] [name|all]     Clone/build/start; install timer if all
+  undeploy [--purge] [name|all]
+  start|stop|restart [name|all]
+  status [name|all]
+  update [name|all]
+  logs <name> [-f]
+  enable-timer | disable-timer
+  help
+EOF
+}
+
+main() {
+  local cmd="${1:-help}"
+  case "$cmd" in
+    help|-h|--help)
+      usage
+      return 0
+      ;;
+  esac
+  shift || true
+  load_config
+  case "$cmd" in
+    deploy) cmd_deploy "$@" ;;
+    undeploy) cmd_undeploy "$@" ;;
+    start) cmd_start "$@" ;;
+    stop) cmd_stop "$@" ;;
+    restart) cmd_restart "$@" ;;
+    status) cmd_status "$@" ;;
+    update)
+      require_cmds
+      cmd_update "$@"
+      ;;
+    logs) cmd_logs "$@" ;;
+    enable-timer) cmd_enable_timer ;;
+    disable-timer) cmd_disable_timer ;;
+    *)
+      log_error "Unknown command: $cmd"
+      usage
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"
