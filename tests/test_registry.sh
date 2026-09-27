@@ -43,4 +43,16 @@ assert_contains "$(list_services all | tr '\n' ' ')" "disabled-fixture" "disable
 targets="$(resolve_targets all | wc -l | tr -d ' ')"
 assert_eq "2" "$targets" "all still only enabled services"
 
+# Caller varname "targets" must not be shadowed by read_resolve_targets locals (set -u).
+_check_read_resolve() {
+  local targets
+  read_resolve_targets all targets || return 1
+  assert_contains "$targets" "cliproxyapi" "read_resolve_targets sets caller targets"
+  assert_contains "$targets" "commandcode-proxy" "read_resolve_targets includes both"
+}
+if ! _check_read_resolve; then
+  echo "FAIL: read_resolve_targets all" >&2
+  ASSERT_FAILS=$((ASSERT_FAILS + 1))
+fi
+
 finish_asserts

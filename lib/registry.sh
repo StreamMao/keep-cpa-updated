@@ -61,10 +61,11 @@ resolve_targets() {
 }
 
 # Resolve targets once; on failure returns 1 (safe under set -e). Sets $2 to newline-separated names.
+# Local result must not be named "targets" — that shadows printf -v when the caller uses that name.
 read_resolve_targets() {
-  local arg="$1" varname="$2" targets
-  if ! targets="$(resolve_targets "$arg")"; then
+  local arg="$1" varname="$2" resolved
+  if ! resolved="$(resolve_targets "$arg")"; then
     return 1
   fi
-  printf -v "$varname" '%s' "$targets"
+  printf -v "$varname" '%s' "$resolved"
 }
