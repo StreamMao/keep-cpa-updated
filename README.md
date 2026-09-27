@@ -1,4 +1,4 @@
-# keep-cpa-otd
+# keep-cpa-updated
 
 Bash toolkit to deploy and operate a small fleet of API proxy services (CLIProxyAPI, commandcode-proxy) on a Linux server with Docker Compose. Design details: `docs/superpowers/specs/2026-09-27-proxy-fleet-ctl-design.md`.
 
@@ -23,7 +23,7 @@ After setup, paths under `~/tools` (or your configured `tools_dir`) look like:
 
 ```text
 ~/tools/
-├── keep-cpa-otd/           # This toolkit (clone of this repo)
+├── keep-cpa-updated/           # This toolkit (clone of this repo)
 ├── CLIProxyAPI/            # Upstream git clone (created by deploy)
 └── commandcode-proxy/      # Upstream git clone (created by deploy)
 ```
@@ -31,7 +31,7 @@ After setup, paths under `~/tools` (or your configured `tools_dir`) look like:
 Generated files stay inside the toolkit:
 
 ```text
-~/tools/keep-cpa-otd/runtime/
+~/tools/keep-cpa-updated/runtime/
 ├── docker-compose.yml      # Generated from services/*.yaml
 ├── cron.log                # Scheduled update output
 ├── update.log              # Update history
@@ -47,8 +47,8 @@ Generated files stay inside the toolkit:
    ```bash
    mkdir -p ~/tools
    cd ~/tools
-   git clone <your-fork-or-origin-url> keep-cpa-otd
-   cd keep-cpa-otd
+   git clone <your-fork-or-origin-url> keep-cpa-updated
+   cd keep-cpa-updated
    ```
 
 2. Copy configuration:
@@ -61,7 +61,7 @@ Generated files stay inside the toolkit:
 
    - `tools_dir: ~/tools`
    - `timezone: America/New_York`
-   - `compose_project_name: keep-cpa-otd`
+   - `compose_project_name: keep-cpa-updated`
 
 4. Deploy the fleet (clones upstream repos, builds images, starts containers, installs the update timer):
 
