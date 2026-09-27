@@ -36,7 +36,7 @@ generate_compose() {
         mapfile -t volumes < <(yq -r '.volumes[]' "$f")
         local v
         for v in "${volumes[@]}"; do
-          v="${v//\$\{TOOLS_DIR\}/$TOOLS_DIR}"
+          v="$(expand_volume_spec "$v")"
           echo "      - \"$v\""
         done
       fi

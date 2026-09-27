@@ -8,7 +8,7 @@ _prepare_service_host_dirs() {
   mapfile -t vols < <(yq -r '.volumes[]?' "$f" 2>/dev/null || true)
   for vol in "${vols[@]}"; do
     [[ -z "$vol" || "$vol" == "null" ]] && continue
-    vol="${vol//\$\{TOOLS_DIR\}/$TOOLS_DIR}"
+    vol="$(expand_volume_spec "$vol")"
     host="${vol%%:*}"
     [[ "$host" == "$vol" ]] && continue
     if [[ "$host" == *.yaml || "$host" == *.yml ]]; then

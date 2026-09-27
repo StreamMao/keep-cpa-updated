@@ -76,8 +76,10 @@ Generated files stay inside the toolkit:
 `deploy` creates host directories for volume mounts and seeds `~/tools/CLIProxyAPI/config.yaml` from the upstream repo’s `config.example.yaml` when missing. You still need to:
 
 - Review and edit `~/tools/CLIProxyAPI/config.yaml` for your environment.
-- Place authentication material under `~/tools/CLIProxyAPI/auths/` (mapped to `/root/.cli-proxy-api` in the container).
+- Keep `auth-dir` as the official default `~/.cli-proxy-api` (inside the container that is `/root/.cli-proxy-api`). We bind-mount the **host** `~/.cli-proxy-api` to that path, so OAuth tokens survive rebuilds and match the [official auth-dir](https://help.router-for.me/cn/configuration/auth-dir.html) layout.
+- Run provider login **inside the container** (or on the host into the same `~/.cli-proxy-api`), for example Antigravity OAuth after deploy.
 - Optional: use `~/tools/CLIProxyAPI/logs/` and `~/tools/CLIProxyAPI/plugins/` as configured in `services/cliproxyapi.yaml`.
+- Optional API keys: put a host `.env` (for example `~/tools/CLIProxyAPI/.env`) and set `env_file` in `services/cliproxyapi.yaml`.
 
 See the [CLIProxyAPI](https://github.com/router-for-me/CLIProxyAPI) README for config and auth details.
 

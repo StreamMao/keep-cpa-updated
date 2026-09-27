@@ -11,6 +11,21 @@ expand_path() {
   echo "$p"
 }
 
+# Expand ${TOOLS_DIR}, ${HOME}, and leading ~ on the host side of a volume spec.
+expand_volume_spec() {
+  local v="$1"
+  v="${v//\$\{TOOLS_DIR\}/$TOOLS_DIR}"
+  v="${v//\$\{HOME\}/$HOME}"
+  if [[ "$v" == *:* ]]; then
+    local host="${v%%:*}"
+    local rest="${v#*:}"
+    host="$(expand_path "$host")"
+    echo "$host:$rest"
+  else
+    expand_path "$v"
+  fi
+}
+
 log_info()  { echo "[INFO] $*"; }
 log_error() { echo "[ERROR] $*" >&2; }
 
